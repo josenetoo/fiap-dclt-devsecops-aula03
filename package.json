@@ -1,0 +1,23 @@
+{
+  "name": "fiap-devsecops-vulnerable-app",
+  "version": "1.0.0",
+  "description": "Aplicação vulnerável para demonstração de SAST com Horusec",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js",
+    "dev": "node app.js"
+  },
+  "keywords": [
+    "security",
+    "sast",
+    "horusec",
+    "devsecops",
+    "fiap"
+  ],
+  "author": "FIAP DevSecOps",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.18.2",
+    "sqlite3": "^5.1.6"
+  }
+}

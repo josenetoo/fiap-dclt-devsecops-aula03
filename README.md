@@ -26,9 +26,8 @@ Implementar análise estática de código (SAST), análise de dependências (SCA
 
 ```
 .
-├── app.py                 # Aplicação Flask com vulnerabilidades intencionais
-├── requirements.txt       # Dependências Python
-├── Dockerfile             # Container da aplicação
+├── app.js                 # Aplicação Express.js com vulnerabilidades intencionais
+├── package.json           # Dependências Node.js
 ├── horusec-config.json    # Configuração do Horusec (SAST)
 ├── .trivyignore           # CVEs a ignorar no Trivy (SCA)
 ├── .github/
@@ -58,8 +57,7 @@ git clone https://github.com/josenetoo/fiap-dclt-devsecops-aula03.git
 cd fiap-dclt-devsecops-aula03
 
 # Execute SAST com Horusec
-docker run -v /var/run/docker.sock:/var/run/docker.sock \
-  -v $(pwd):/src horuszup/horusec-cli:latest horusec start -p /src
+horusec start -p .
 
 # Execute SCA com Trivy
 trivy fs . --severity HIGH,CRITICAL

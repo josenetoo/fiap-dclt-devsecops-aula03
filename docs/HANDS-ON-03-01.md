@@ -193,114 +193,115 @@ docker run -v /var/run/docker.sock:/var/run/docker.sock \
 
 ### Passo 7: Executar Scan Local
 
-**Mac/Linux - Instalar Bandit:**
-```bash
-# Instalar pipx (gerenciador de ferramentas Python)
-brew install pipx
-pipx ensurepath
-
-# Instalar Bandit
-pipx install bandit
-```
-
-**Executar Scan:**
 ```bash
 cd ~/fiap-devsecops/fiap-dclt-devsecops-aula03
 
 # Scan básico
-bandit -r app.py
+horusec start -p .
 
 # Scan com output JSON
-bandit -r app.py -f json -o bandit-results.json
+horusec start -p . -o json -O horusec-results.json
 
-# Scan apenas severidades altas
-bandit -r app.py -ll
+# Ignorar severidades baixas
+horusec start -p . --ignore-severity LOW
 ```
 
 **Windows (PowerShell):**
 ```powershell
-# Instalar Bandit
-pip install bandit
-
-# Executar scan
 cd ~\fiap-devsecops\fiap-dclt-devsecops-aula03
-bandit -r app.py
-```
-
-**Alternativa (Docker):**
-```bash
-docker run --rm -v $(pwd):/src python:3.11-slim \
-  sh -c "pip install bandit -q && bandit -r /src/app.py"
+horusec start -p .
 ```
 
 ---
 
 ### Passo 8: Analisar Resultados
 
-**Resultado esperado (Bandit):**
+**Resultado esperado (Horusec):**
 
 ```
->> Issue: [B608:hardcoded_sql_expressions] Possible SQL injection vector
-   Severity: Medium   Confidence: Low
-   Location: /src/app.py:86:12
-86	    query = f"SELECT * FROM users WHERE id = {user_id}"
+Language: Leaks
+Severity: CRITICAL
+File: app.js
+Line: 31
+Code: const API_KEY = "sk-1234567890abcdef";
+Details: Hard-coded credential detected (CWE-798)
 
->> Issue: [B602:subprocess_popen_with_shell_equals_true] subprocess call with shell=True
-   Severity: High   Confidence: High
-   Location: /src/app.py:124:17
-124	    result = subprocess.check_output(f'ping -c 1 {host}', shell=True, text=True)
+Language: Leaks
+Severity: CRITICAL
+File: app.js
+Line: 32
+Code: const DB_PASSWORD = "admin123";
+Details: Hard-coded password detected (CWE-798)
 
->> Issue: [B608:hardcoded_sql_expressions] Possible SQL injection vector
-   Severity: Medium   Confidence: Low
-   Location: /src/app.py:143:12
-143	    query = f"SELECT * FROM users WHERE username = '{username}' AND password = '{password}'"
+Language: JavaScript
+Severity: CRITICAL
+File: app.js
+Line: 118
+Code: const result = eval(expression);
+Details: No use eval - Remote Code Execution risk (CWE-94)
 
->> Issue: [B201:flask_debug_true] Flask app run with debug=True
-   Severity: High   Confidence: Medium
-   Location: /src/app.py:158:4
-158	    app.run(host='0.0.0.0', port=5000, debug=True)
+Language: JavaScript
+Severity: HIGH
+File: app.js
+Line: 132
+Code: const hash = crypto.createHash('md5').update(text).digest('hex');
+Details: No use MD5 hashing - Weak cryptography (CWE-327)
 
-Run metrics:
-	Total issues (by severity):
-		Low: 1
-		Medium: 3
-		High: 2
+Language: JavaScript
+Severity: HIGH
+File: app.js
+Line: 88
+Code: exec('ping -c 1 ' + host, ...)
+Details: Command Injection risk (CWE-78)
+
+==================================================================================
+Total: 5 vulnerabilities (CRITICAL: 3, HIGH: 2)
 ```
 
 ---
 
 ### Passo 9: Entender as Vulnerabilidades
 
-Abra o `app.py` e localize:
+Abra o `app.js` e localize:
 
-**1. SQL Injection (HIGH):**
-```python
-# Linha ~45 ❌ VULNERÁVEL
-query = f"SELECT * FROM users WHERE id = {user_id}"
+**1. Hardcoded Credentials (CRITICAL):**
+```javascript
+// Linha 31-34 ❌ VULNERÁVEL
+const API_KEY = "sk-1234567890abcdef";
+const DB_PASSWORD = "admin123";
 
-# ✅ CORRIGIDO
-query = "SELECT * FROM users WHERE id = ?"
-cursor.execute(query, (user_id,))
+// ✅ CORRIGIDO - Use variáveis de ambiente
+const API_KEY = process.env.API_KEY;
+const DB_PASSWORD = process.env.DB_PASSWORD;
 ```
 
-**2. XSS (HIGH):**
-```python
-# Linha ~60 ❌ VULNERÁVEL
-return f"<h1>Olá, {nome}</h1>"
+**2. Eval - Remote Code Execution (CRITICAL):**
+```javascript
+// Linha 118 ❌ VULNERÁVEL
+const result = eval(expression);
 
-# ✅ CORRIGIDO
-from markupsafe import escape
-return f"<h1>Olá, {escape(nome)}</h1>"
+// ✅ CORRIGIDO - Use biblioteca segura
+const mathjs = require('mathjs');
+const result = mathjs.evaluate(expression);
 ```
 
 **3. Command Injection (HIGH):**
-```python
-# Linha ~75 ❌ VULNERÁVEL
-os.system(f"ping {host}")
+```javascript
+// Linha 88 ❌ VULNERÁVEL
+exec('ping -c 1 ' + host, callback);
 
-# ✅ CORRIGIDO
-import subprocess
-subprocess.run(["ping", "-c", "1", host], capture_output=True)
+// ✅ CORRIGIDO - Use execFile com argumentos separados
+const { execFile } = require('child_process');
+execFile('ping', ['-c', '1', host], callback);
+```
+
+**4. Criptografia Fraca - MD5 (HIGH):**
+```javascript
+// Linha 132 ❌ VULNERÁVEL
+crypto.createHash('md5').update(text).digest('hex');
+
+// ✅ CORRIGIDO - Use SHA-256 ou bcrypt
+crypto.createHash('sha256').update(text).digest('hex');
 ```
 
 ---

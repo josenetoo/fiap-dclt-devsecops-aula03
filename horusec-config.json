@@ -16,7 +16,8 @@
     "**/*_test.go",
     "**/vendor/**",
     "**/node_modules/**",
-    "**/docs/**"
+    "**/docs/**",
+    "**/_backup/**"
   ],
   "horusecCliHeaders": {},
   "horusecCliHorusecApiUri": "",

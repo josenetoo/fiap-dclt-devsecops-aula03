@@ -1,33 +1,27 @@
 # Aula 03 - Cheatsheet
 
-## Bandit (Python SAST)
+## Horusec CLI (SAST)
 
 ```bash
-# Instalar (Mac/Linux)
-brew install pipx && pipx install bandit
+# Instalar (Mac arm64 - Apple Silicon)
+curl -fsSL https://github.com/ZupIT/horusec/releases/latest/download/horusec_mac_arm64 -o horusec
+chmod +x horusec && sudo mv horusec /usr/local/bin/
 
-# Scan básico
-bandit -r app.py
-
-# Scan com output JSON
-bandit -r app.py -f json -o bandit-results.json
-
-# Apenas severidades HIGH
-bandit -r app.py -ll
-```
-
-## Horusec CLI
-
-```bash
-# Instalar (Mac)
+# Instalar (Mac Intel)
 curl -fsSL https://github.com/ZupIT/horusec/releases/latest/download/horusec_mac_amd64 -o horusec
 chmod +x horusec && sudo mv horusec /usr/local/bin/
 
-# Scan local
+# Instalar (Linux)
+curl -fsSL https://raw.githubusercontent.com/ZupIT/horusec/main/deployments/scripts/install.sh | bash
+
+# Scan básico
 horusec start -p .
 
 # Scan com output JSON
 horusec start -p . -o json -O horusec-results.json
+
+# Ignorar severidades baixas
+horusec start -p . --ignore-severity LOW
 ```
 
 ## Trivy CLI

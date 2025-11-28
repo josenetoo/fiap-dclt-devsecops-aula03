@@ -448,17 +448,4 @@ git push origin main
 
 ---
 
-## ✅ Checkpoint
-
-Ao final deste vídeo você deve ter:
-
-- [ ] Entender diferença entre SAST e SCA
-- [ ] Saber o que é CVE
-- [ ] Horusec instalado ou rodando via Docker
-- [ ] Scan local executado com sucesso
-- [ ] Identificado vulnerabilidades no código
-- [ ] Job Horusec no pipeline
-
----
-
 **FIM DO VÍDEO 3.1** ✅

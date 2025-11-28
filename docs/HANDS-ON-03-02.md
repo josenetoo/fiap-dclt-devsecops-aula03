@@ -363,18 +363,4 @@ git push origin main
 
 ---
 
-## ✅ Checkpoint
-
-Ao final deste vídeo você deve ter:
-
-- [ ] Entender importância do SCA
-- [ ] Conhecer o caso Log4Shell
-- [ ] Trivy instalado
-- [ ] Scan local executado
-- [ ] Identificado CVEs nas dependências
-- [ ] Atualizado dependências vulneráveis
-- [ ] Job Trivy no pipeline
-
----
-
 **FIM DO VÍDEO 3.2** ✅

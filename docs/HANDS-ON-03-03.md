@@ -342,19 +342,6 @@ Total: X (HIGH: X, CRITICAL: X)
 
 ---
 
-## ✅ Checkpoint
-
-Ao final deste vídeo você deve ter:
-
-- [ ] Entender o que é SBOM
-- [ ] Conhecer formatos CycloneDX e SPDX
-- [ ] Saber o que é PURL
-- [ ] Gerar SBOM localmente
-- [ ] SBOM sendo gerado no pipeline
-- [ ] Artifacts disponíveis para download
-
----
-
 ## 📖 Leitura Complementar
 
 - [CycloneDX Specification](https://cyclonedx.org/specification/)

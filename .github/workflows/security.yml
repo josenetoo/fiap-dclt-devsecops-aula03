@@ -75,3 +75,39 @@ jobs:
         with:
           name: trivy-sca-report
           path: trivy-sca-results.json
+
+  # ============================================
+  # JOB: Gerar SBOM
+  # ============================================
+  sbom:
+    name: 📦 Generate SBOM
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: 📥 Checkout
+        uses: actions/checkout@v4
+
+      - name: 📦 Generate SBOM (CycloneDX)
+        uses: aquasecurity/trivy-action@master
+        with:
+          scan-type: 'fs'
+          scan-ref: '.'
+          format: 'cyclonedx'
+          output: 'sbom-cyclonedx.json'
+
+      - name: 📦 Generate SBOM (SPDX)
+        uses: aquasecurity/trivy-action@master
+        with:
+          scan-type: 'fs'
+          scan-ref: '.'
+          format: 'spdx-json'
+          output: 'sbom-spdx.json'
+
+      - name: 📤 Upload SBOMs
+        uses: actions/upload-artifact@v4
+        with:
+          name: sbom-reports
+          path: |
+            sbom-cyclonedx.json
+            sbom-spdx.json
+          retention-days: 90

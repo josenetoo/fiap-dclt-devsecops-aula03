@@ -104,7 +104,13 @@ trivy version
 
 ### Passo 5: Analisar package.json
 
-Primeiro, veja as dependências do projeto:
+O projeto contém três arquivos de configuração:
+
+| Arquivo | Descrição |
+|---------|-----------|
+| `package.json` | Versão atual (vulnerável por padrão) |
+| `package.vulnerable.json` | Dependências com CVEs conhecidas |
+| `package.fixed.json` | Dependências atualizadas (sem CVEs) |
 
 **Linux/Mac:**
 ```bash
@@ -119,18 +125,22 @@ cat package.json
   "version": "1.0.0",
   "dependencies": {
     "express": "^4.18.2",
-    "sqlite3": "^5.1.6"
-  },
-  "devDependencies": {
+    "sqlite3": "^5.1.6",
     "lodash": "4.17.20",
     "minimist": "1.2.5",
     "node-fetch": "2.6.1",
     "axios": "0.21.1"
+  },
+  "_vulnerabilities": {
+    "lodash@4.17.20": "CVE-2021-23337 - Command Injection",
+    "minimist@1.2.5": "CVE-2021-44906 - Prototype Pollution (CRITICAL)",
+    "node-fetch@2.6.1": "CVE-2022-0235 - Information Exposure",
+    "axios@0.21.1": "CVE-2021-3749 - ReDoS"
   }
 }
 ```
 
-> ⚠️ As dependências em `devDependencies` contêm CVEs conhecidas para fins de demonstração!
+> ⚠️ O campo `_vulnerabilities` documenta as CVEs intencionais para fins de demonstração!
 
 ---
 
@@ -173,35 +183,36 @@ trivy fs . --severity HIGH,CRITICAL
 ```
 package-lock.json (npm)
 =======================
-Total: 1 (HIGH: 0, CRITICAL: 1)
+Total: 6 (HIGH: 5, CRITICAL: 1)
 
-┌──────────┬────────────────┬──────────┬───────────────────┬───────────────┬─────────────────────────────┐
-│ Library  │ Vulnerability  │ Severity │ Installed Version │ Fixed Version │           Title             │
-├──────────┼────────────────┼──────────┼───────────────────┼───────────────┼─────────────────────────────┤
-│ minimist │ CVE-2021-44906 │ CRITICAL │ 1.2.5             │ 1.2.6         │ minimist: prototype pollution│
-└──────────┴────────────────┴──────────┴───────────────────┴───────────────┴─────────────────────────────┘
+┌────────────┬────────────────┬──────────┬───────────────────┬───────────────┐
+│  Library   │ Vulnerability  │ Severity │ Installed Version │ Fixed Version │
+├────────────┼────────────────┼──────────┼───────────────────┼───────────────┤
+│ axios      │ CVE-2021-3749  │ HIGH     │ 0.21.1            │ 0.21.2        │
+│ lodash     │ CVE-2021-23337 │ HIGH     │ 4.17.20           │ 4.17.21       │
+│ minimist   │ CVE-2021-44906 │ CRITICAL │ 1.2.5             │ 1.2.6         │
+│ node-fetch │ CVE-2022-0235  │ HIGH     │ 2.6.1             │ 2.6.7         │
+└────────────┴────────────────┴──────────┴───────────────────┴───────────────┘
 ```
 
-> ⚠️ O Trivy também detecta **secrets** no código! Verifique a seção de secrets no relatório.
+> ⚠️ O Trivy também detecta **secrets** no código (hardcoded credentials no app.js)!
 
 ---
 
 ### Passo 8: Corrigir Vulnerabilidades
 
-A correção é simples: **atualizar as versões!**
+O projeto inclui um arquivo com dependências corrigidas:
 
-**Atualizar package.json:**
+**Alternar para versão corrigida:**
 ```bash
-# Verificar pacotes desatualizados
-npm outdated
-
-# Atualizar todas as dependências
-npm update
-
-# Ou atualizar para versões major
-npx npm-check-updates -u
-npm install
+# Usar package.json com dependências atualizadas
+npm run use:fixed
 ```
+
+**O que o comando faz:**
+1. Copia `package.fixed.json` para `package.json`
+2. Remove `node_modules` e `package-lock.json`
+3. Reinstala as dependências atualizadas
 
 **Re-executar scan:**
 ```bash
@@ -210,7 +221,14 @@ trivy fs . --severity HIGH,CRITICAL
 
 **Resultado esperado:**
 ```
+package-lock.json (npm)
+=======================
 Total: 0 (HIGH: 0, CRITICAL: 0)
+```
+
+**Voltar para versão vulnerável (para demonstração):**
+```bash
+npm run use:vulnerable
 ```
 
 ---

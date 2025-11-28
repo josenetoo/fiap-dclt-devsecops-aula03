@@ -4,12 +4,8 @@
   "description": "Aplicação vulnerável para demonstração de SAST e SCA",
   "main": "app.js",
   "scripts": {
-    "start": "node app.js",
-    "use:vulnerable": "cp package.vulnerable.json package.json && rm -rf node_modules package-lock.json && npm install",
-    "use:fixed": "cp package.fixed.json package.json && rm -rf node_modules package-lock.json && npm install"
+    "start": "node app.js"
   },
-  "author": "FIAP DevSecOps",
-  "license": "MIT",
   "dependencies": {
     "express": "^4.18.2",
     "sqlite3": "^5.1.6",

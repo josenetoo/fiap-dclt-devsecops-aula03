@@ -1,4 +1,8 @@
-# Python
+# Node.js
+node_modules/
+npm-debug.log*
+
+# Python (backup)
 __pycache__/
 *.py[cod]
 *$py.class

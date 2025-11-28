@@ -102,28 +102,35 @@ trivy version
 
 ---
 
-### Passo 5: Analisar requirements.txt
+### Passo 5: Analisar package.json
 
 Primeiro, veja as dependências do projeto:
 
 **Linux/Mac:**
 ```bash
 cd ~/fiap-devsecops/fiap-dclt-devsecops-aula03
-cat requirements.txt
+cat package.json
 ```
 
 **Conteúdo (com dependências vulneráveis para demonstração):**
-```txt
-Flask==2.3.0
-Werkzeug==2.3.0
-gunicorn==21.2.0
-boto3==1.28.0
-
-# Dependências com CVEs conhecidas (para demonstração)
-urllib3==1.26.5      # CVE-2021-33503
-Pillow==8.0.0        # Múltiplos CVEs
-requests==2.25.0     # CVE-2023-32681
+```json
+{
+  "name": "fiap-devsecops-vulnerable-app",
+  "version": "1.0.0",
+  "dependencies": {
+    "express": "^4.18.2",
+    "sqlite3": "^5.1.6"
+  },
+  "devDependencies": {
+    "lodash": "4.17.20",
+    "minimist": "1.2.5",
+    "node-fetch": "2.6.1",
+    "axios": "0.21.1"
+  }
+}
 ```
+
+> ⚠️ As dependências em `devDependencies` contêm CVEs conhecidas para fins de demonstração!
 
 ---
 
@@ -164,19 +171,18 @@ trivy fs . --severity HIGH,CRITICAL
 **Resultado esperado:**
 
 ```
-requirements.txt (pip)
-======================
-Total: 5 (HIGH: 3, CRITICAL: 2)
+package-lock.json (npm)
+=======================
+Total: 1 (HIGH: 0, CRITICAL: 1)
 
-┌─────────────┬────────────────┬──────────┬─────────────────────────────────────┐
-│   Library   │ Vulnerability  │ Severity │              Title                  │
-├─────────────┼────────────────┼──────────┼─────────────────────────────────────┤
-│ urllib3     │ CVE-2021-33503 │ HIGH     │ Catastrophic backtracking in URL   │
-│ Pillow      │ CVE-2022-22817 │ CRITICAL │ PIL.ImageMath.eval allows code exec │
-│ Pillow      │ CVE-2022-24303 │ HIGH     │ Path traversal vulnerability        │
-│ requests    │ CVE-2023-32681 │ HIGH     │ Unintended leak of proxy-auth header│
-└─────────────┴────────────────┴──────────┴─────────────────────────────────────┘
+┌──────────┬────────────────┬──────────┬───────────────────┬───────────────┬─────────────────────────────┐
+│ Library  │ Vulnerability  │ Severity │ Installed Version │ Fixed Version │           Title             │
+├──────────┼────────────────┼──────────┼───────────────────┼───────────────┼─────────────────────────────┤
+│ minimist │ CVE-2021-44906 │ CRITICAL │ 1.2.5             │ 1.2.6         │ minimist: prototype pollution│
+└──────────┴────────────────┴──────────┴───────────────────┴───────────────┴─────────────────────────────┘
 ```
+
+> ⚠️ O Trivy também detecta **secrets** no código! Verifique a seção de secrets no relatório.
 
 ---
 
@@ -184,17 +190,17 @@ Total: 5 (HIGH: 3, CRITICAL: 2)
 
 A correção é simples: **atualizar as versões!**
 
-**Atualizar requirements.txt:**
-```txt
-Flask==2.3.0
-Werkzeug==2.3.0
-gunicorn==21.2.0
-boto3==1.28.0
+**Atualizar package.json:**
+```bash
+# Verificar pacotes desatualizados
+npm outdated
 
-# Versões corrigidas
-urllib3>=2.0.0       # Corrigido
-Pillow>=10.0.0       # Corrigido
-requests>=2.31.0     # Corrigido
+# Atualizar todas as dependências
+npm update
+
+# Ou atualizar para versões major
+npx npm-check-updates -u
+npm install
 ```
 
 **Re-executar scan:**
@@ -335,6 +341,7 @@ git push origin main
 | `trivy: command not found` | Não instalado | Instalar via brew/choco |
 | Scan muito lento | Primeiro download de DB | Aguardar, próximos são rápidos |
 | CVE não reconhecida | DB desatualizado | `trivy image --download-db-only` |
+| Não encontrou dependências | Falta package-lock.json | Execute `npm install` primeiro |
 
 ---
 

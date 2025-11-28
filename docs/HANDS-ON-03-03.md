@@ -15,14 +15,14 @@
 ```mermaid
 graph TB
     subgraph "Sua Aplicação"
-        A[app.py]
+        A[app.js]
     end
     
     subgraph "SBOM - Inventário"
-        B[Flask 2.3.0]
-        C[Werkzeug 2.3.0]
-        D[Jinja2 3.1.2]
-        E[boto3 1.28.0]
+        B[express 4.18.2]
+        C[body-parser 1.20.0]
+        D[cookie-parser 1.4.6]
+        E[sqlite3 5.1.6]
         F[...]
     end
     
@@ -92,11 +92,11 @@ graph LR
   "components": [
     {
       "type": "library",
-      "name": "Flask",
-      "version": "2.3.0",
-      "purl": "pkg:pypi/flask@2.3.0",
+      "name": "express",
+      "version": "4.18.2",
+      "purl": "pkg:npm/express@4.18.2",
       "licenses": [
-        { "license": { "id": "BSD-3-Clause" } }
+        { "license": { "id": "MIT" } }
       ]
     }
   ]
@@ -113,8 +113,9 @@ graph LR
 
 **Exemplos:**
 ```
+pkg:npm/express@4.18.2         # Node.js
+pkg:npm/sqlite3@5.1.6          # Node.js
 pkg:pypi/flask@2.3.0           # Python
-pkg:npm/express@4.18.0         # Node.js
 pkg:maven/org.apache.log4j/log4j-core@2.17.0  # Java
 pkg:docker/nginx@1.25          # Docker
 ```
@@ -168,21 +169,21 @@ Get-Content sbom.json | ConvertFrom-Json | Select-Object -ExpandProperty compone
   },
   "components": [
     {
-      "bom-ref": "pkg:pypi/flask@2.3.0",
+      "bom-ref": "pkg:npm/express@4.18.2",
       "type": "library",
-      "name": "Flask",
-      "version": "2.3.0",
-      "purl": "pkg:pypi/flask@2.3.0",
+      "name": "express",
+      "version": "4.18.2",
+      "purl": "pkg:npm/express@4.18.2",
       "licenses": [
-        { "license": { "id": "BSD-3-Clause" } }
+        { "license": { "id": "MIT" } }
       ]
     },
     {
-      "bom-ref": "pkg:pypi/werkzeug@2.3.0",
+      "bom-ref": "pkg:npm/sqlite3@5.1.6",
       "type": "library",
-      "name": "Werkzeug",
-      "version": "2.3.0",
-      "purl": "pkg:pypi/werkzeug@2.3.0"
+      "name": "sqlite3",
+      "version": "5.1.6",
+      "purl": "pkg:npm/sqlite3@5.1.6"
     }
   ]
 }
@@ -301,15 +302,16 @@ trivy sbom sbom-cyclonedx.json
 ```
 sbom-cyclonedx.json (cyclonedx)
 ===============================
-Total: 2 (HIGH: 1, CRITICAL: 1)
+Total: X (HIGH: X, CRITICAL: X)
 
 ┌──────────┬────────────────┬──────────┐
 │ Library  │ Vulnerability  │ Severity │
 ├──────────┼────────────────┼──────────┤
-│ urllib3  │ CVE-2021-33503 │ HIGH     │
-│ Pillow   │ CVE-2022-22817 │ CRITICAL │
+│ example  │ CVE-XXXX-XXXXX │ HIGH     │
 └──────────┴────────────────┴──────────┘
 ```
+
+> 💡 Se não houver CVEs, significa que as dependências estão atualizadas!
 
 ---
 
@@ -334,7 +336,7 @@ Total: 2 (HIGH: 1, CRITICAL: 1)
 
 | Erro | Causa | Solução |
 |------|-------|---------|
-| SBOM vazio | Não encontrou dependências | Verificar se `requirements.txt` existe |
+| SBOM vazio | Não encontrou dependências | Verificar se `package-lock.json` existe (execute `npm install`) |
 | Formato inválido | Versão antiga do Trivy | Atualizar Trivy |
 | Licença desconhecida | Pacote sem metadados | Adicionar manualmente |
 

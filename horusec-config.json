@@ -1,0 +1,42 @@
+{
+  "horusecCliCertInsecureSkipVerify": false,
+  "horusecCliCertPath": "",
+  "horusecCliContainerBindProjectPath": "",
+  "horusecCliCustomRulesPath": "",
+  "horusecCliDisableDocker": true,
+  "horusecCliEnableCommitAuthor": false,
+  "horusecCliEnableGitHistoryAnalysis": false,
+  "horusecCliEnableInformationSeverity": false,
+  "horusecCliEnableOwaspDependencyCheck": false,
+  "horusecCliEnableShellcheck": false,
+  "horusecCliFalsePositiveHashes": [],
+  "horusecCliFilesOrPathsToIgnore": [
+    "**/test/**",
+    "**/tests/**",
+    "**/*_test.go",
+    "**/vendor/**",
+    "**/node_modules/**",
+    "**/docs/**"
+  ],
+  "horusecCliHeaders": {},
+  "horusecCliHorusecApiUri": "",
+  "horusecCliJsonOutputFilepath": "",
+  "horusecCliMonitorRetryInSeconds": 15,
+  "horusecCliPrintOutputType": "text",
+  "horusecCliProjectPath": "./",
+  "horusecCliRepositoryAuthorization": "",
+  "horusecCliRepositoryName": "",
+  "horusecCliReturnErrorIfFoundVulnerability": false,
+  "horusecCliRiskAcceptHashes": [],
+  "horusecCliSeveritiesToIgnore": [
+    "INFO"
+  ],
+  "horusecCliShowVulnerabilitiesTypes": [
+    "Vulnerability"
+  ],
+  "horusecCliTimeoutInSecondsAnalysis": 600,
+  "horusecCliTimeoutInSecondsRequest": 300,
+  "horusecCliToolsConfig": {},
+  "horusecCliToolsToIgnore": [],
+  "horusecCliWorkDir": {}
+}

@@ -39,3 +39,39 @@ jobs:
           name: horusec-report
           path: horusec-results.json
           retention-days: 30
+
+  # ============================================
+  # JOB: SCA com Trivy
+  # ============================================
+  trivy-sca:
+    name: 🔍 SCA - Trivy
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: 📥 Checkout
+        uses: actions/checkout@v4
+
+      - name: 🔍 Trivy FS Scan
+        uses: aquasecurity/trivy-action@master
+        with:
+          scan-type: 'fs'
+          scan-ref: '.'
+          format: 'table'
+          severity: 'CRITICAL,HIGH'
+          exit-code: '1'  # Falha se encontrar vulnerabilidades
+
+      - name: 📤 Trivy JSON Report
+        uses: aquasecurity/trivy-action@master
+        if: always()
+        with:
+          scan-type: 'fs'
+          scan-ref: '.'
+          format: 'json'
+          output: 'trivy-sca-results.json'
+
+      - name: 📤 Upload Report
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: trivy-sca-report
+          path: trivy-sca-results.json
